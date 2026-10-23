@@ -1,0 +1,3 @@
+﻿folio,genero,estatura_cm,peso_kg,altura_hombro_sentado_cm,longitud_torso_cm,contorno_pecho_cm,alcance_brazo_cm,likert_comodidad,likert_ajuste,cuello_corta,anclaje_adecuado,presion_busto
+P001,Mujer,159.3,55.9,52.0,48.3,87.4,71.0,2,2,1,0,0
+P002,Hombre,168.6,70.1,58.9,48.3,100.5,74.4,4,4,0,1,0

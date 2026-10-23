@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EquiFit — Auditoría de sesgo antropométrico</title>
+<meta name="description" content="EquiFit audita la brecha de datos de género en el diseño de productos. Caso piloto: el cinturón de seguridad. Proyecto de la Universidad Politécnica de Yucatán para InnovaFest Mérida 2026.">
+<meta property="og:title" content="EquiFit — Auditoría de sesgo antropométrico">
+<meta property="og:description" content="Comparamos un modelo entrenado con el «estándar masculino» contra uno que incluye las medidas de las mujeres.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23142029'/%3E%3Cpath d='M8 26 26 6' stroke='%23eb6834' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --niebla: #eef1f3;
+    --papel: #f8f9fa;
+    --tinta: #142029;
+    --tinta-2: #4a5662;
+    --linea: #cdd4da;
+    --cinta: #2f3a45;
+    --cinta-2: #3a4652;
+    --a: #eb6834;
+    --b: #2a78d6;
+    --medida: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--niebla); color: var(--tinta);
+    font-family: "Archivo", system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.6;
+    font-variation-settings: "wdth" 100;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--b); outline-offset: 3px; border-radius: 4px; }
+  .envoltura { max-width: var(--medida); margin: 0 auto; padding: 0 24px; }
+
+  /* Cabecera */
+  header { position: relative; z-index: 3; }
+  .barra { display: flex; justify-content: space-between; align-items: center; padding-top: 22px; padding-bottom: 22px; }
+  .marca { font-weight: 800; font-variation-settings: "wdth" 125; letter-spacing: -0.01em; text-decoration: none; font-size: 1.15rem; }
+  .barra nav { display: flex; gap: 22px; font-size: .95rem; }
+  .barra nav a { text-decoration: none; color: var(--tinta-2); }
+  .barra nav a:hover { color: var(--tinta); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* Héroe: la cinta del cinturón es el único elemento expresivo */
+  .heroe { position: relative; overflow: hidden; padding: 56px 0 0; }
+  .heroe .envoltura { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 24px; align-items: stretch; }
+  .heroe-texto { padding: 8px 0 104px; }
+  .cinturon { width: 100%; height: 100%; min-height: 520px; overflow: visible; display: block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .banda { animation: abrochar 1.2s cubic-bezier(.2,.8,.2,1) .2s both; }
+    @keyframes abrochar { from { transform: translateX(-900px); } to { transform: translateX(0); } }
+  }
+  h1 {
+    font-variation-settings: "wdth" 125; font-weight: 850; font-size: clamp(2.5rem, 6.4vw, 4.6rem);
+    line-height: .98; letter-spacing: -0.025em; margin: 0 0 26px;
+  }
+  .lead { font-size: 1.2rem; color: var(--tinta-2); max-width: 32rem; margin: 0 0 32px; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+  .boton {
+    display: inline-block; padding: 14px 22px; border-radius: 10px; font-weight: 650; text-decoration: none;
+    border: 2px solid var(--tinta); transition: background .15s, color .15s;
+  }
+  .boton.primario { background: var(--tinta); color: var(--niebla); }
+  .boton.primario:hover { background: var(--b); border-color: var(--b); }
+  .boton.secundario:hover { background: var(--tinta); color: var(--niebla); }
+  .subtitulo { margin-top: 36px; font-size: .95rem; color: var(--tinta-2); max-width: 30rem; }
+
+  /* Secciones */
+  section { padding: 88px 0; }
+  section + section { border-top: 1px solid var(--linea); }
+  h2 {
+    font-variation-settings: "wdth" 112; font-weight: 800; font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+    line-height: 1.08; letter-spacing: -0.015em; margin: 0 0 20px; max-width: 24ch;
+  }
+  .prosa { max-width: 62ch; color: var(--tinta-2); }
+  .prosa p { margin: 0 0 16px; }
+
+  /* El dato */
+  .dato { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 56px; align-items: center; }
+  .cifra {
+    font-variation-settings: "wdth" 125; font-weight: 900; font-size: clamp(6rem, 17vw, 12.5rem);
+    line-height: .8; letter-spacing: -0.04em; color: var(--a);
+  }
+  .fuente { font-size: .85rem; color: var(--tinta-2); margin-top: 18px; }
+
+  /* A vs B */
+  .comparacion { margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); border-top: 2px solid var(--tinta); }
+  .comparacion > div { padding: 16px 0; border-bottom: 1px solid var(--linea); }
+  .comparacion .cab { font-weight: 750; font-size: .95rem; padding-top: 18px; }
+  .comparacion .cab span { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+  .var { font-weight: 550; }
+  .var small { display: block; color: var(--tinta-2); font-weight: 400; font-size: .88rem; }
+  .ve, .nove { display: flex; align-items: center; gap: 10px; font-size: .95rem; }
+  .ve::before { content: ""; width: 26px; height: 26px; border-radius: 50%; flex: none; }
+  .ve { color: var(--tinta); }
+  .ve.a::before { background: var(--a); }
+  .ve.b::before { background: var(--b); }
+  .nove { color: #8a96a1; }
+  .nove::before { content: ""; width: 26px; height: 26px; border-radius: 50%; flex: none; border: 2px dashed #a9b4be; }
+  .controles { margin-top: 28px; color: var(--tinta-2); max-width: 62ch; }
+
+  /* Proceso: secuencia real, por eso numerada */
+  .pasos { list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; counter-reset: paso; }
+  .pasos li { counter-increment: paso; padding: 0 20px 0 0; position: relative; }
+  .pasos li::before {
+    content: counter(paso); display: block; font-variation-settings: "wdth" 125; font-weight: 800; font-size: 1.1rem;
+    width: 40px; height: 40px; line-height: 36px; text-align: center; border: 2px solid var(--tinta); border-radius: 50%;
+    background: var(--niebla); position: relative; z-index: 1; margin-bottom: 14px;
+  }
+  .pasos li::after { content: ""; position: absolute; top: 19px; left: 40px; right: 0; border-top: 2px solid var(--linea); }
+  .pasos li:last-child::after { display: none; }
+  .pasos strong { display: block; margin-bottom: 4px; }
+  .pasos p { margin: 0; color: var(--tinta-2); font-size: .95rem; }
+
+  /* Demo */
+  .demo { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+  .funciones { margin: 8px 0 0; padding: 0; list-style: none; }
+  .funciones li { padding: 16px 0; border-bottom: 1px solid var(--linea); }
+  .funciones li:first-child { border-top: 1px solid var(--linea); }
+  .funciones strong { display: block; }
+  .funciones span { color: var(--tinta-2); font-size: .97rem; }
+  .qr { background: var(--papel); border: 1px solid var(--linea); border-radius: 14px; padding: 24px; text-align: center; }
+  .qr img { width: 100%; max-width: 220px; height: auto; display: block; margin: 0 auto 14px; }
+  .qr p { margin: 0 0 16px; color: var(--tinta-2); font-size: .95rem; }
+  .aviso { margin-top: 28px; padding: 14px 18px; border-left: 4px solid #eda100; background: #fff6df; border-radius: 6px; font-size: .95rem; max-width: 62ch; }
+
+  .productos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; padding: 0; list-style: none; }
+  .productos li { padding: 8px 14px; border: 1px solid var(--linea); border-radius: 999px; background: var(--papel); font-size: .95rem; }
+
+  .equipo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; }
+  .equipo ul { list-style: none; padding: 0; margin: 0; }
+  .equipo li { padding: 6px 0; }
+  .equipo .meta { color: var(--tinta-2); }
+
+  footer { background: var(--tinta); color: #c9d2da; padding: 48px 0 56px; font-size: .9rem; }
+  footer a { color: #fff; }
+  footer .envoltura { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; }
+  footer h3 { color: #fff; font-size: .95rem; margin: 0 0 10px; }
+  footer ol { margin: 0; padding-left: 18px; }
+
+  @media (max-width: 860px) {
+    .dato, .demo, .equipo, footer .envoltura { grid-template-columns: 1fr; gap: 32px; }
+    .pasos { grid-template-columns: 1fr; gap: 22px; }
+    .pasos li { padding: 0 0 0 56px; }
+    .pasos li::before { position: absolute; left: 0; top: 0; margin: 0; }
+    .pasos li::after { display: none; }
+    .comparacion { grid-template-columns: minmax(0, 1.3fr) minmax(0, .85fr) minmax(0, .85fr); }
+    .ve, .nove { font-size: .82rem; gap: 6px; }
+    .ve::before, .nove::before { width: 18px; height: 18px; }
+    .heroe .envoltura { grid-template-columns: 1fr; gap: 0; }
+    .heroe-texto { padding-bottom: 24px; }
+    .cinturon { display: none; }
+    .barra nav { gap: 14px; }
+  }
+  @media (max-width: 480px) {
+    .barra nav a:first-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="envoltura barra">
+    <a class="marca" href="#">EquiFit</a>
+    <nav aria-label="Principal">
+      <a href="#como">Cómo funciona</a>
+      <a class="js-demo" href="https://equifit.streamlit.app">Demo</a>
+      <a href="https://github.com/armando4322-2/EquiFit">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="heroe">
+    <div class="envoltura">
+      <div class="heroe-texto">
+        <h1>Un cinturón pensado para un solo cuerpo.</h1>
+        <p class="lead">El maniquí de choque más usado se basó en un hombre de 1.75 m y 77 kg. EquiFit audita qué pasa cuando los datos con los que se diseña un producto dejan fuera a la mitad de las personas que lo usan.</p>
+        <div class="acciones">
+          <a class="boton primario js-demo" href="https://equifit.streamlit.app">Abrir la demo</a>
+          <a class="boton secundario" href="https://github.com/armando4322-2/EquiFit">Ver el código</a>
+        </div>
+        <p class="subtitulo">Auditoría de sesgo antropométrico en sistemas de seguridad pasiva mediante aprendizaje automático. Universidad Politécnica de Yucatán.</p>
+      </div>
+      <svg class="cinturon" viewBox="0 0 420 600" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+        <defs>
+          <pattern id="tejido" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect width="6" height="6" fill="#2f3a45"/><rect width="3" height="6" fill="#3a4652"/>
+          </pattern>
+        </defs>
+        <g transform="translate(470 -40) rotate(128.7)">
+          <g class="banda">
+            <rect x="-60" y="-38" width="1000" height="76" fill="url(#tejido)"/>
+            <line x1="-60" y1="-27" x2="940" y2="-27" stroke="#eef1f3" stroke-opacity=".5" stroke-width="2" stroke-dasharray="8 6"/>
+            <line x1="-60" y1="27" x2="940" y2="27" stroke="#eef1f3" stroke-opacity=".5" stroke-width="2" stroke-dasharray="8 6"/>
+          </g>
+          <rect x="88" y="-56" width="44" height="112" rx="16" fill="none" stroke="#a9b4be" stroke-width="11"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <section aria-labelledby="t-dato">
+    <div class="envoltura dato">
+      <div class="cifra" aria-hidden="true">73%</div>
+      <div>
+        <h2 id="t-dato">Más probabilidad de lesión grave para ellas, con el cinturón puesto.</h2>
+        <div class="prosa">
+          <p>En choques frontales, las mujeres que llevaban cinturón tuvieron 73 % más probabilidad de sufrir una lesión grave que los hombres con cinturón, aun después de tomar en cuenta la severidad del choque, la estatura, el índice de masa corporal y el año del vehículo.</p>
+          <p>Los sistemas de seguridad se validan con maniquíes cuyo modelo de referencia es masculino. La versión femenina es, en esencia, una versión reducida del mismo cuerpo. Cuando los datos no describen a alguien, el diseño tampoco lo protege igual.</p>
+        </div>
+        <p class="fuente">Fuentes: Forman et al., <i>Traffic Injury Prevention</i> (2019), Universidad de Virginia; descripción del maniquí Hybrid III en Manufacturing.net. Enlaces al pie de la página.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="como" aria-labelledby="t-como">
+    <div class="envoltura">
+      <h2 id="t-como">El mismo algoritmo, entrenado dos veces.</h2>
+      <div class="prosa">
+        <p>Medimos a estudiantes y personal de la UPY y les pedimos usar el cinturón de un mismo vehículo. Con esos datos entrenamos dos modelos que predicen si el cinturón le ajusta bien a una persona. Lo único que cambia entre ellos es qué medidas pueden ver.</p>
+      </div>
+
+      <div class="comparacion" role="table" aria-label="Variables que ve cada modelo">
+        <div class="cab" role="columnheader">Medida</div>
+        <div class="cab" role="columnheader"><span style="background:var(--a)"></span>Modelo A · estándar</div>
+        <div class="cab" role="columnheader"><span style="background:var(--b)"></span>Modelo B · inclusivo</div>
+
+        <div class="var" role="cell">Estatura</div>
+        <div class="ve a" role="cell">La ve</div><div class="ve b" role="cell">La ve</div>
+
+        <div class="var" role="cell">Peso</div>
+        <div class="ve a" role="cell">La ve</div><div class="ve b" role="cell">La ve</div>
+
+        <div class="var" role="cell">Altura de hombro sentado<small>Decide si la banda cruza el cuello</small></div>
+        <div class="nove" role="cell">No la ve</div><div class="ve b" role="cell">La ve</div>
+
+        <div class="var" role="cell">Longitud de torso<small>Cambia el recorrido de la banda diagonal</small></div>
+        <div class="nove" role="cell">No la ve</div><div class="ve b" role="cell">La ve</div>
+
+        <div class="var" role="cell">Contorno de pecho / busto<small>Donde aparece la presión incómoda</small></div>
+        <div class="nove" role="cell">No la ve</div><div class="ve b" role="cell">La ve</div>
+      </div>
+
+      <p class="controles">Mismo algoritmo (Random Forest), mismos hiperparámetros y la misma partición de entrenamiento y prueba. Si el Modelo B se equivoca menos con las mujeres, la diferencia viene de los datos que antes faltaban.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-proceso">
+    <div class="envoltura">
+      <h2 id="t-proceso">De la cinta métrica a la auditoría.</h2>
+      <ol class="pasos">
+        <li><strong>Consentimiento</strong><p>Participación voluntaria y anónima, con folio en lugar de nombre.</p></li>
+        <li><strong>Encuesta</strong><p>Comodidad y ajuste del cinturón en escala del 1 al 5.</p></li>
+        <li><strong>Medición</strong><p>Estatura, hombro sentado, torso, pecho y alcance de brazo.</p></li>
+        <li><strong>Prueba de uso</strong><p>¿Corta en el cuello? ¿Presiona el busto? ¿El anclaje se adapta?</p></li>
+        <li><strong>Auditoría</strong><p>Entrenamos A y B y comparamos sus errores por grupo.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-demo">
+    <div class="envoltura demo">
+      <div>
+        <h2 id="t-demo">Lo que puedes hacer en la demo.</h2>
+        <ul class="funciones">
+          <li><strong>Auditoría A vs B</strong><span>Precisión, error por grupo y la tasa de falso «seguro»: cuántas veces el modelo aprueba un cinturón que no ajusta.</span></li>
+          <li><strong>Pruébalo tú</strong><span>Escribe tu estatura y peso y mira si los dos modelos coinciden contigo.</span></li>
+          <li><strong>Escenario histórico</strong><span>Entrena con una base donde casi no hay mujeres y observa cómo crece el error.</span></li>
+          <li><strong>Cargar datos de campo</strong><span>Sube la encuesta, las medidas y la lista de cotejo; todo se recalcula al momento.</span></li>
+        </ul>
+        <p class="aviso">Hasta terminar el trabajo de campo (2 al 5 de noviembre de 2026), la demo usa datos simulados con el mismo formato que nuestros instrumentos. No son resultados del estudio.</p>
+      </div>
+      <div class="qr">
+        <img src="qr-demo.svg" alt="Código QR que abre la demo de EquiFit">
+        <p>Escanea para abrir la demo en tu teléfono.</p>
+        <a class="boton primario js-demo" href="https://equifit.streamlit.app">Abrir la demo</a>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-mas">
+    <div class="envoltura">
+      <h2 id="t-mas">El cinturón es la prueba. El método sirve para todo lo que se diseña con medidas.</h2>
+      <div class="prosa"><p>Cualquier producto que se ajusta al cuerpo puede auditarse igual: medir a quien lo usa, comparar el modelo «estándar» contra uno inclusivo y revisar dónde falla cada uno.</p></div>
+      <ul class="productos">
+        <li>Asientos de vehículos y transporte público</li>
+        <li>Equipo de protección personal</li>
+        <li>Herramientas manuales</li>
+        <li>Dispositivos médicos</li>
+        <li>Uniformes y tallas</li>
+        <li>Mobiliario de oficina y aulas</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-equipo">
+    <div class="envoltura equipo">
+      <div>
+        <h2 id="t-equipo">Equipo 2 · Ciencia de Datos UPY</h2>
+        <p class="meta">TSU en Ciencia de Datos, 3°B · Proyecto Integrador I<br>Docente: Omar Adrián Ortiz Monzón<br>Presentado en InnovaFest Mérida, 4 de noviembre de 2026</p>
+      </div>
+      <ul>
+        <li>Ivanna Núñez Hernández</li>
+        <li>Luisa Fernanda Trochez Rodríguez</li>
+        <li>Camila Berenice Borrego Ayala</li>
+        <li>Jesse Velázquez Rojas</li>
+        <li>Armando Karin Molina Marrufo</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="envoltura">
+    <div>
+      <h3>Fuentes</h3>
+      <ol>
+        <li><a href="https://archive.news.virginia.edu/content/study-new-cars-are-safer-women-most-likely-suffer-injury/">Universidad de Virginia: Study: New Cars Are Safer, But Women Most Likely to Suffer Injury (2019)</a></li>
+        <li><a href="https://www.manufacturing.net/safety/news/22943982/crash-dummies-used-in-car-safety-tests-are-still-modeled-after-men-despite-higher-risks-for-women">Manufacturing.net: Crash dummies used in car safety tests are still modeled after men</a></li>
+      </ol>
+    </div>
+    <div>
+      <h3>Proyecto</h3>
+      <p>Código abierto bajo licencia MIT.<br><a href="https://github.com/armando4322-2/EquiFit">github.com/armando4322-2/EquiFit</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Cambia aquí la dirección de la demo si Streamlit asigna otra.
+  const DEMO_URL = "https://equifit.streamlit.app";
+  document.querySelectorAll(".js-demo").forEach(a => a.href = DEMO_URL);
+</script>
+</body>
+</html>
