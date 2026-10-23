@@ -121,13 +121,6 @@ Pruebas:
 pip install pytest && pytest -q
 ```
 
-## Publicar la demo (gratis)
-
-1. Entra a [share.streamlit.io](https://share.streamlit.io) con la cuenta de GitHub.
-2. **Create app** → repositorio `armando4322-2/EquiFit`, rama `main`, archivo `app.py`.
-3. En **App URL** escribe `equifit` para obtener `https://equifit.streamlit.app` (si está ocupado, elige otro y cambia `DEMO_URL` en `docs/index.html`).
-4. Para la página del proyecto: **Settings → Pages →** rama `main`, carpeta `/docs`.
-
 ## Estructura
 
 ```
