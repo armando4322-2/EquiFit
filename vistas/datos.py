@@ -5,6 +5,7 @@ import streamlit as st
 
 from equifit import analysis as A
 from equifit import config as C
+from equifit import data as D
 from equifit import ui
 
 df, es_real = ui.datos_actuales()
@@ -93,6 +94,6 @@ st.divider()
 with st.expander("Ver la base de datos (anonimizada por folio)"):
     st.dataframe(df, hide_index=True, width="stretch")
     st.download_button(
-        "Descargar CSV", df.to_csv(index=False).encode("utf-8-sig"),
+        "Descargar CSV", D.csv_seguro(df).encode("utf-8-sig"),
         file_name="equifit_datos.csv", mime="text/csv",
     )

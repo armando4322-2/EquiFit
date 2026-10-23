@@ -24,7 +24,7 @@ with c1:
 with c2:
     with st.container(border=True):
         st.markdown("**Variables dependientes**")
-        st.markdown("Precisión global, tasa de error por grupo, falso «seguro» y métricas de equidad.")
+        st.markdown("Exactitud global (accuracy), tasa de error por grupo, falso «seguro» y métricas de equidad.")
 with c3:
     with st.container(border=True):
         st.markdown("**Controles**")
@@ -64,6 +64,20 @@ st.markdown(
 - Sin nombres, correos ni datos personales: solo folio.
 - Solo medidas antropométricas externas; no se piden datos de salud ni información íntima.
 - El sistema se usa para auditar datos y promover seguridad vial inclusiva, nunca para clasificar personas.
+"""
+)
+
+st.markdown("### Privacidad y seguridad de los datos")
+st.markdown(
+    """
+- **Minimización:** solo se registran las medidas que usa el modelo; nada de nombres, correos, matrícula ni datos de salud.
+- **Seudonimización:** cada persona es un folio. La relación folio–nombre (necesaria solo para atender una solicitud de baja)
+  se guarda aparte, en papel bajo llave o en un archivo cifrado, y se destruye al cerrar el proyecto.
+- **Dónde viven los datos:** en una carpeta institucional con acceso solo para el equipo y verificación en dos pasos.
+  Nunca en WhatsApp, correos personales, memorias USB sin cifrar ni en este repositorio.
+- **Demo pública = solo datos simulados.** La carga de archivos está desactivada en la versión en línea; los datos reales
+  se analizan en la copia local del equipo y solo se publican resultados agregados por grupo.
+- **Derechos de las personas:** cualquier participante puede pedir ver, corregir o retirar sus datos con su folio.
 """
 )
 

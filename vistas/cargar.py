@@ -1,4 +1,6 @@
+import os
 from functools import reduce
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -36,9 +38,22 @@ st.download_button(
     icon=":material/download:",
 )
 
-archivos = st.file_uploader(
-    "Archivos CSV o Excel", type=["csv", "xlsx"], accept_multiple_files=True
-)
+
+
+def es_copia_local() -> bool:
+    """La carga de archivos solo se habilita en la copia local del equipo.
+
+    En la demo pública (Streamlit Cloud) los datos se procesarían en servidores
+    de terceros fuera de México; por política del proyecto, ahí solo se usan
+    datos simulados. EQUIFIT_PERMITIR_CARGA=1 la habilita a propósito.
+    """
+    if os.environ.get("EQUIFIT_PERMITIR_CARGA") == "1":
+        return True
+    try:
+        host = (st.context.headers.get("Host") or "").split(":")[0].lower()
+    except Exception:
+        return False
+    return host in ("localhost", "127.0.0.1", "::1", "[::1]")
 
 
 def leer(f) -> pd.DataFrame:
@@ -46,6 +61,32 @@ def leer(f) -> pd.DataFrame:
         return pd.read_excel(f)
     return D.leer_csv(f)
 
+
+class _Ejemplo:
+    """Archivo de ejemplo con datos simulados, para mostrar la carga en la demo pública."""
+    name = "demo_simulado.csv"
+
+    def read(self):
+        return open(RUTA_EJEMPLO, "rb").read()
+
+
+RUTA_EJEMPLO = Path(__file__).resolve().parents[1] / "datos" / "demo_simulado.csv"
+
+if es_copia_local():
+    archivos = st.file_uploader(
+        "Archivos CSV o Excel (máximo 5 MB)", type=["csv", "xlsx"], accept_multiple_files=True
+    )
+else:
+    st.info(
+        "**En la demo pública no se suben datos de participantes.** Este servidor está fuera de México y "
+        "es compartido, así que por política del proyecto aquí solo se usan datos simulados. Los datos reales "
+        "se cargan en la copia local del equipo (`streamlit run app.py` en una computadora del equipo), "
+        "donde nunca salen del equipo. Puedes probar cómo funciona la carga con el archivo de ejemplo.",
+        icon=":material/lock:",
+    )
+    archivos = [_Ejemplo()] if st.button("Probar la carga con el archivo de ejemplo") or st.session_state.get("_ejemplo") else []
+    if archivos:
+        st.session_state["_ejemplo"] = True
 
 if archivos:
     try:
@@ -85,4 +126,4 @@ if st.session_state.get("df_real") is not None:
         st.session_state["usar_reales"] = False
         st.rerun()
 
-st.caption("Los archivos se procesan solo en esta sesión del navegador y no se guardan en ningún servidor.")
+st.caption("Los archivos se procesan en memoria durante esta sesión y no se escriben en disco ni en el repositorio.")

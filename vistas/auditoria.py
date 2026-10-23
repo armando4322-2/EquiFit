@@ -56,9 +56,9 @@ def m(metrica, modelo):
 # ---------------------------------------------------------------------------
 st.write("")
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Precisión global", ui.pct(m("precision_global", "B")),
+k1.metric("Exactitud global", ui.pct(m("precision_global", "B")),
           delta=f"{(m('precision_global','B') - m('precision_global','A'))*100:+.0f} pts vs A",
-          help=f"Modelo A: {ui.pct(m('precision_global','A'))}. Porcentaje de predicciones correctas.")
+          help=f"Modelo A: {ui.pct(m('precision_global','A'))}. Porcentaje de predicciones correctas (accuracy).")
 k2.metric("Error en mujeres", ui.pct(m("error_mujeres", "B")),
           delta=f"{(m('error_mujeres','B') - m('error_mujeres','A'))*100:+.0f} pts vs A", delta_color="inverse",
           help=f"Modelo A: {ui.pct(m('error_mujeres','A'))}.")
@@ -138,7 +138,7 @@ t1, t2, t3, t4 = st.tabs(["Métricas de equidad", "Matrices de confusión", "Qu�
 
 with t1:
     nombres = {
-        "precision_global": ("Precisión global", "Más alto es mejor"),
+        "precision_global": ("Exactitud global (accuracy)", "Más alto es mejor"),
         "error_mujeres": ("Error en mujeres", "Más bajo es mejor"),
         "error_hombres": ("Error en hombres", "Más bajo es mejor"),
         "brecha_error": ("Brecha de error |mujeres − hombres|", "Más bajo es mejor"),
@@ -170,7 +170,7 @@ with t2:
     cols = st.columns(2)
     for col, r in zip(cols, (exp.A, exp.B)):
         with col:
-            st.markdown(f"**{r.nombre}** · precisión {r.por_grupo.loc['Total','precision']:.0%}")
+            st.markdown(f"**{r.nombre}** · exactitud {r.por_grupo.loc['Total','precision']:.0%}")
             pg = r.por_grupo.loc[C.GRUPOS, ["n", "VP", "FN", "FP", "VN"]].rename(
                 columns={"VP": "Ajusta → dijo ajusta", "FN": "Ajusta → dijo no",
                          "FP": "No ajusta → dijo ajusta", "VN": "No ajusta → dijo no"}

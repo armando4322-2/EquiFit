@@ -47,7 +47,7 @@ Ambos predicen si el cinturón **ajusta bien (1)** o **no ajusta / genera molest
 
 | Página | Para qué sirve |
 |---|---|
-| **Auditoría A vs B** | Precisión global, error por grupo, tasa de **falso «seguro»** (cuántas veces el modelo aprueba un cinturón que no ajusta) y métricas de equidad. Incluye un **escenario histórico** que entrena con muy pocas mujeres. |
+| **Auditoría A vs B** | Exactitud global, error por grupo, tasa de **falso «seguro»** (cuántas veces el modelo aprueba un cinturón que no ajusta) y métricas de equidad. Incluye un **escenario histórico** que entrena con muy pocas mujeres. |
 | **Datos y preguntas** | Responde la pregunta descriptiva (frecuencia de molestias por grupo) y la correlacional (distancia al «estándar masculino» vs. incomodidad, con Spearman o Pearson según normalidad). |
 | **Pruébalo tú** | Para el stand: la persona escribe su estatura y peso y ve si los dos modelos coinciden. |
 | **Cargar datos** | Sube los datos de campo (un archivo o los tres instrumentos por separado, unidos por `folio`). Todo se recalcula. |
@@ -60,7 +60,7 @@ Ambos predicen si el cinturón **ajusta bien (1)** o **no ajusta / genera molest
 **Pregunta de investigación (aplicada / experimental):** ¿Reduce la brecha de error entre mujeres y hombres entrenar el modelo de ajuste con variables antropométricas femeninas (torso, hombro y busto), frente a entrenarlo solo con el dataset basado en el estándar masculino?
 
 - **Variable independiente:** qué variables ve el modelo (versión A o B).
-- **Variables dependientes:** precisión global, tasa de error por grupo, falso «seguro» y métricas de equidad.
+- **Variables dependientes:** exactitud global (accuracy), tasa de error por grupo, falso «seguro» y métricas de equidad.
 - **Controles:** mismo algoritmo (Random Forest), mismos hiperparámetros, misma partición estratificada 70/30.
 - **Variable objetivo:** ajusta (1) si el promedio Likert de comodidad y ajuste es ≥ 4 **y** la lista de cotejo no marca corte en el cuello ni presión en el busto; si no, 0. La regla se fijó antes de recolectar.
 
@@ -140,12 +140,27 @@ EquiFit/
 └── tests/                 # Pruebas automáticas
 ```
 
+## Privacidad y seguridad
+
+EquiFit maneja medidas corporales de personas reales, así que la privacidad es parte del diseño, no un agregado.
+
+| Riesgo | Control |
+|---|---|
+| Identificar a una persona por sus medidas | Solo folios; sin nombres, correos ni matrícula. Resultados públicos solo agregados por grupo |
+| Que los datos salgan del equipo | La demo pública **no acepta archivos**: solo datos simulados. Los datos reales se analizan en la copia local |
+| Fuga desde el repositorio | `.gitignore` bloquea todo `datos/` salvo plantilla y ejemplo; sin credenciales en el código |
+| Archivos maliciosos o pesados | Carga limitada a 5 MB, solo `.csv` y `.xlsx`, validación de columnas y rangos |
+| Fórmulas ocultas en CSV exportados | Las descargas neutralizan celdas que empiezan con `=`, `+`, `-` o `@` |
+| Datos que quedan en memoria del servidor | Caché con caducidad de 1 hora y límite de entradas |
+
+Para reportar un problema de seguridad, consulta [SECURITY.md](SECURITY.md).
+
 ## Ética
 
 - Consentimiento informado firmado; participación 100 % voluntaria.
 - Sin nombres, correos ni datos personales: cada participante es un folio.
 - Solo medidas antropométricas externas; no se piden datos de salud ni información íntima.
-- **Los datos crudos de campo no se suben a este repositorio** (`datos/crudos/` está en `.gitignore`).
+- **Los datos de campo nunca se suben a este repositorio.**
 - El sistema sirve para auditar datos y promover seguridad vial inclusiva, nunca para clasificar personas.
 
 ## Limitaciones

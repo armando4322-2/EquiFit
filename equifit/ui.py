@@ -55,17 +55,17 @@ def datos_actuales() -> tuple[pd.DataFrame, bool]:
     return _simulados(s.get("sim_n", 300), s.get("sim_prop", 0.5), s.get("sim_semilla", C.SEMILLA)), False
 
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=False, ttl=3600, max_entries=8)
 def experimento(df: pd.DataFrame, prop_train: float | None):
     return M.ejecutar(df, prop_train)
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner=False, ttl=3600, max_entries=16)
 def repetido(df: pd.DataFrame, repeticiones: int, prop_train: float | None) -> pd.DataFrame:
     return M.ejecutar_repetido(df, repeticiones, prop_train)
 
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner=False, ttl=3600, max_entries=8)
 def modelos_completos(df: pd.DataFrame):
     return M.entrenar_completo(df)
 

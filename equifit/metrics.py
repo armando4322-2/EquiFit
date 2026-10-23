@@ -2,8 +2,9 @@
 cada número sea explicable en la expo.
 
 Glosario (positivo = "el cinturón ajusta"):
-- Precisión (accuracy): % de predicciones correctas.
-- Tasa de error: 1 − precisión.
+- Exactitud (accuracy): % de predicciones correctas. No se llama «precisión»
+  para no confundirla con la métrica *precision* de ML.
+- Tasa de error: 1 − exactitud.
 - Falso "seguro" (FPR): de las personas a quienes el cinturón NO les ajusta,
   % que el modelo marca como "sí ajusta". Es el error peligroso: aprueba un
   diseño que en realidad lastima o no protege.

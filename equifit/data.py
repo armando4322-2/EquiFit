@@ -198,6 +198,15 @@ def leer_csv(archivo) -> pd.DataFrame:
     return pd.read_csv(io.StringIO(texto), sep=sep)
 
 
+def csv_seguro(df: pd.DataFrame) -> str:
+    """CSV sin inyección de fórmulas: un texto que empieza con = + - @ se
+    antepone con ' para que Excel no lo ejecute al abrirlo."""
+    out = df.copy()
+    for c in out.select_dtypes(include="object").columns:
+        out[c] = out[c].astype(str).where(~out[c].astype(str).str.match(r"^[=+\-@\t\r]"), "'" + out[c].astype(str))
+    return out.to_csv(index=False)
+
+
 def plantilla() -> pd.DataFrame:
     """Plantilla vacía con dos filas de ejemplo para el registro de campo."""
     ejemplo = simular(n=2, semilla=7)

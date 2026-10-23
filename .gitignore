@@ -5,6 +5,13 @@ venv/
 .pytest_cache/
 .DS_Store
 .streamlit/secrets.toml
-# Datos crudos de campo: NO se suben (contienen información de participantes)
-datos/crudos/
+# Datos de campo: NUNCA se suben (contienen información de participantes).
+# En datos/ solo se versionan la plantilla y el ejemplo simulado.
+datos/*
+!datos/plantilla_equifit.csv
+!datos/demo_simulado.csv
 *.xlsx
+*.xls
+*.ods
+*.sav
+consentimientos/

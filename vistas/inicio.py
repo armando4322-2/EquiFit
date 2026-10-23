@@ -66,8 +66,8 @@ with der:
         c2.metric("Error en mujeres · Modelo B", ui.pct(eb), delta=f"{(eb - ea) * 100:+.0f} pts", delta_color="inverse")
         pa, pb = res.loc["precision_global", "A_media"], res.loc["precision_global", "B_media"]
         c3, c4 = st.columns(2)
-        c3.metric("Precisión global · A", ui.pct(pa))
-        c4.metric("Precisión global · B", ui.pct(pb), delta=f"{(pb - pa) * 100:+.0f} pts")
+        c3.metric("Exactitud global · A", ui.pct(pa))
+        c4.metric("Exactitud global · B", ui.pct(pb), delta=f"{(pb - pa) * 100:+.0f} pts")
         st.caption("Promedio de 15 particiones de entrenamiento/prueba.")
     ui.aviso_fuente(es_real, df)
 
@@ -76,7 +76,7 @@ st.markdown("### Recorre la demo")
 c1, c2, c3, c4 = st.columns(4)
 with c1:
     st.page_link("vistas/auditoria.py", label="Auditoría A vs B", icon=":material/balance:")
-    st.caption("Las métricas de precisión y equidad de los dos modelos, lado a lado.")
+    st.caption("Las métricas de exactitud y equidad de los dos modelos, lado a lado.")
 with c2:
     st.page_link("vistas/simulador.py", label="Pruébalo tú", icon=":material/accessibility_new:")
     st.caption("Escribe tus medidas y mira qué opina cada modelo.")
