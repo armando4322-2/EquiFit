@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="EquiFit · Auditoría de sesgo antropométrico",
     page_icon="⚖️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",  # cerrado en celular, abierto en escritorio,
 )
 
 from equifit import ui  # noqa: E402
