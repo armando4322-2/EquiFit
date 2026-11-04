@@ -5,7 +5,7 @@ from equifit import ui
 
 df, es_real = ui.datos_actuales()
 
-st.markdown("# EquiFit")
+st.image("docs/logo/EquiFit_horizontal_color.svg", width=340)
 st.markdown(
     "#### Auditoría de la brecha de datos de género en el diseño de productos"
 )

@@ -22,6 +22,8 @@ CSS = """
 .block-container { padding-top: 2.2rem; max-width: 1180px; }
 h1, h2, h3 { letter-spacing: -0.01em; }
 h1 { color: var(--morado) !important; }
+h1, h2, h3, h4 { font-variation-settings: "wdth" 112; font-weight: 800 !important; }
+h1 { font-variation-settings: "wdth" 125; }
 [data-testid="stSidebar"] { border-right: 3px solid var(--rosa); }
 [data-testid="stMetricValue"] { color: var(--tinta); }
 .ef-aviso { border-left: 4px solid #eda100; background: #fff7e3; padding: .7rem 1rem; border-radius: 6px; color: var(--tinta); font-size: .93rem; }

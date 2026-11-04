@@ -4,7 +4,8 @@ primaryColor = "#5b3a95"
 backgroundColor = "#f6f1fb"
 secondaryBackgroundColor = "#ece3f6"
 textColor = "#2b1d3f"
-font = "sans serif"
+font = "Archivo:https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap, sans-serif"
+headingFont = "Archivo:https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap, sans-serif"
 
 [server]
 headless = true

@@ -7,7 +7,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="EquiFit · Auditoría de sesgo antropométrico",
-    page_icon="⚖️",
+    page_icon="docs/logo/EquiFit_favicon_512px.png",
     layout="wide",
     initial_sidebar_state="auto",  # cerrado en celular, abierto en escritorio
 )
@@ -15,6 +15,12 @@ st.set_page_config(
 from equifit import ui  # noqa: E402
 
 ui.estilos()
+st.logo(
+    "docs/logo/EquiFit_horizontal_color.svg",
+    icon_image="docs/logo/EquiFit_icono_color.svg",
+    size="large",
+    link="https://armando4322-2.github.io/EquiFit/",
+)
 
 paginas = [
     st.Page("vistas/inicio.py", title="Inicio", icon=":material/home:", default=True),

@@ -1,6 +1,9 @@
 <div align="center">
 
-# EquiFit
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/EquiFit_horizontal_claro.svg">
+  <img src="docs/logo/EquiFit_horizontal_color.svg" alt="EquiFit" width="420">
+</picture>
 
 **Auditoría de sesgo antropométrico en sistemas de seguridad pasiva mediante aprendizaje automático**
 

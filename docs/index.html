@@ -11,7 +11,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235b3a95'/%3E%3Cpath d='M8 26 26 6' stroke='%23f6c9dc' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="logo/EquiFit_favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="logo/EquiFit_favicon_32px.png">
+<link rel="apple-touch-icon" href="logo/EquiFit_favicon_180px.png">
+<meta property="og:image" content="https://armando4322-2.github.io/EquiFit/logo/equifit_social.png">
+<meta property="og:url" content="https://armando4322-2.github.io/EquiFit/">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   :root {
     --niebla: #f6f1fb;      /* lavanda muy clara: fondo */
@@ -45,6 +50,7 @@
   /* Cabecera */
   header { position: relative; z-index: 3; }
   .barra { display: flex; justify-content: space-between; align-items: center; padding-top: 22px; padding-bottom: 22px; }
+  .marca img { display: block; height: 42px; width: auto; }
   .marca { color: var(--morado); font-weight: 800; font-variation-settings: "wdth" 125; letter-spacing: -0.01em; text-decoration: none; font-size: 1.15rem; }
   .barra nav { display: flex; gap: 22px; font-size: .95rem; }
   .barra nav a { text-decoration: none; color: var(--tinta-2); }
@@ -153,6 +159,7 @@
   footer .envoltura { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; }
   footer h3 { color: #fff; font-size: .95rem; margin: 0 0 10px; }
   footer ol { margin: 0; padding-left: 18px; }
+  .logo-pie { display: block; height: 50px; width: auto; margin-bottom: 18px; }
 
   @media (max-width: 860px) {
     .dato, .demo, .equipo, footer .envoltura { grid-template-columns: 1fr; gap: 32px; }
@@ -177,7 +184,7 @@
 
 <header>
   <div class="envoltura barra">
-    <a class="marca" href="#">EquiFit</a>
+    <a class="marca" href="#"><img src="logo/EquiFit_horizontal_color.svg" alt="EquiFit" width="160" height="42"></a>
     <nav aria-label="Principal">
       <a href="#como">Cómo funciona</a>
       <a class="js-demo" href="https://equifit.streamlit.app">Demo</a>
@@ -339,6 +346,7 @@
       </ol>
     </div>
     <div>
+      <img class="logo-pie" src="logo/EquiFit_horizontal_claro.svg" alt="EquiFit" width="190" height="50">
       <h3>Proyecto</h3>
       <p>Código abierto bajo licencia MIT.<br><a href="https://github.com/armando4322-2/EquiFit">github.com/armando4322-2/EquiFit</a></p>
     </div>
