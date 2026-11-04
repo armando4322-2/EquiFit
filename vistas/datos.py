@@ -32,7 +32,7 @@ for g in C.GRUPOS:
     ys = [desc.loc[g, k] for k in indicadores]
     fig.add_bar(
         name=f"{g}es" if g == "Mujer" else f"{g}s", x=list(indicadores.values()), y=ys,
-        marker=dict(color=C.COLOR_GRUPO[g], line=dict(width=2, color="#f7f5f0"), cornerradius=4),
+        marker=dict(color=C.COLOR_GRUPO[g], line=dict(width=2, color="#f6f1fb"), cornerradius=4),
         text=[f"{v:.0%}" for v in ys], textposition="outside", textfont=dict(color=ui.TINTA),
         hovertemplate="%{x}<br>" + g + ": %{y:.1%}<extra></extra>", cliponaxis=False,
     )

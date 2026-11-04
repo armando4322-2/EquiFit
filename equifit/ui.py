@@ -12,23 +12,26 @@ from . import model as M
 
 REPO_URL = "https://github.com/armando4322-2/EquiFit"
 
-TINTA = "#1c2430"
-TINTA_2 = "#4f5867"
-REJILLA = "#e6e3dc"
+TINTA = "#2b1d3f"
+TINTA_2 = "#5f5372"
+REJILLA = "#e2d7ee"
 
 CSS = """
 <style>
-:root { --tinta:#1c2430; --tinta2:#4f5867; --a:#eb6834; --b:#2a78d6; --mujer:#6250d6; --hombre:#008300; --papel:#f7f5f0; }
+:root { --tinta:#2b1d3f; --tinta2:#5f5372; --morado:#5b3a95; --rosa:#f6c9dc; --rosa-suave:#fbe6f0; --rosa-fuerte:#b83a73; --a:#eb6834; --b:#2a78d6; --mujer:#6250d6; --hombre:#008300; --papel:#f6f1fb; }
 .block-container { padding-top: 2.2rem; max-width: 1180px; }
 h1, h2, h3 { letter-spacing: -0.01em; }
+h1 { color: var(--morado) !important; }
+[data-testid="stSidebar"] { border-right: 3px solid var(--rosa); }
+[data-testid="stMetricValue"] { color: var(--tinta); }
 .ef-aviso { border-left: 4px solid #eda100; background: #fff7e3; padding: .7rem 1rem; border-radius: 6px; color: var(--tinta); font-size: .93rem; }
 .ef-real { border-left-color: var(--hombre); background: #eaf6ea; }
-.ef-modelo { border-radius: 10px; padding: 1rem 1.1rem; border: 1px solid #e3e0d8; background: white; height: 100%; }
+.ef-modelo { border-radius: 10px; padding: 1rem 1.1rem; border: 1px solid #e2d7ee; background: white; height: 100%; }
 .ef-modelo h4 { margin: 0 0 .35rem 0; font-size: 1.05rem; }
 .ef-tag { display:inline-block; font-size:.78rem; font-weight:600; padding:.12rem .55rem; border-radius:999px; color:white; }
 .ef-tag-a { background: var(--a); } .ef-tag-b { background: var(--b); }
-.ef-veredicto { border-radius: 10px; padding: 1rem 1.2rem; background: #eef4fc; border: 1px solid #cfe0f6; color: var(--tinta); }
-.ef-veredicto.neutro { background: #f3f2ee; border-color: #e0ddd5; }
+.ef-veredicto { border-radius: 10px; padding: 1rem 1.2rem; background: var(--rosa-suave); border: 1px solid var(--rosa); color: var(--tinta); }
+.ef-veredicto.neutro { background: #f1ecf7; border-color: #e2d7ee; }
 .ef-grande { font-size: 2.6rem; font-weight: 700; line-height: 1; }
 .ef-sub { color: var(--tinta2); font-size: .92rem; }
 </style>
@@ -148,7 +151,7 @@ def barras_agrupadas(valores: dict, errores: dict | None, titulo: str, eje: str)
             err = dict(type="data", array=hi, arrayminus=lo, color=TINTA_2, thickness=1.2, width=5)
         fig.add_bar(
             name=modelo, x=[f"{g}es" if g == "Mujer" else f"{g}s" for g in grupos], y=ys,
-            marker=dict(color=C.COLOR_MODELO[modelo], line=dict(width=2, color="#f7f5f0"), cornerradius=4),
+            marker=dict(color=C.COLOR_MODELO[modelo], line=dict(width=2, color="#f6f1fb"), cornerradius=4),
             error_y=err,
             text=[f"{v:.0%}" for v in ys], textposition="inside", insidetextanchor="start",
             textfont=dict(color="white", size=14), textangle=0,

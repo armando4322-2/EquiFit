@@ -102,7 +102,7 @@ with der:
         s = df[df[C.COL_GENERO] == g]["altura_hombro_sentado_cm"]
         fig.add_histogram(
             x=s, name=f"{g}es" if g == "Mujer" else f"{g}s", opacity=0.7, nbinsx=24,
-            marker=dict(color=C.COLOR_GRUPO[g], line=dict(width=1, color="#f7f5f0")),
+            marker=dict(color=C.COLOR_GRUPO[g], line=dict(width=1, color="#f6f1fb")),
             hovertemplate="%{x} cm: %{y} personas<extra></extra>",
         )
     fig.add_vline(x=hombro, line=dict(color=ui.TINTA, width=2), annotation_text="Tú",
