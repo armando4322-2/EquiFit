@@ -139,6 +139,7 @@ EquiFit/
 │   └── ui.py              # Estado, caché, estilos y gráficas
 ├── scripts/auditoria.py   # Auditoría por terminal
 ├── datos/                 # Plantilla y ejemplo simulado (nunca datos crudos)
+├── instrumentos/          # Formularios de Google (consentimiento y encuesta) y su guía
 ├── docs/                  # Página del proyecto (GitHub Pages) y códigos QR
 └── tests/                 # Pruebas automáticas
 ```
