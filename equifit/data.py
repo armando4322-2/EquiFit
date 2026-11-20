@@ -132,6 +132,9 @@ def validar(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     """Valida y limpia un dataset cargado. Devuelve (df_limpio, avisos)."""
     avisos: list[str] = []
     df = df.copy()
+    from .forms import desde_google_forms, es_exportacion_forms
+    if es_exportacion_forms(df):
+        df, avisos = desde_google_forms(df)
     df.columns = [c.strip().lower() for c in df.columns]
 
     faltan = [c for c in C.COLUMNAS_REQUERIDAS if c not in df.columns]

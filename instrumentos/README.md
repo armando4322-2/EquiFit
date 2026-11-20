@@ -1,5 +1,26 @@
 # Instrumentos del estudio (Google Forms)
 
+> **Versión vigente: encuesta en línea con autorreporte** (`EquiFit_encuesta_autorreporte.gs`).
+> Cada persona responde sobre el vehículo en el que viaja con más frecuencia y se toma sus propias
+> medidas con cinta métrica. El consentimiento va al inicio del mismo formulario y la encuesta es
+> anónima: no pide nombre, correo ni folio. Con solo contestarla se obtienen todas las columnas que
+> usa EquiFit.
+>
+> **Para usarla:** crea el formulario igual que se explica abajo, pero con la función
+> `crearEncuestaEquiFit`. Usa el encabezado `encabezado_encuesta.png`.
+>
+> **Para analizar las respuestas:** en la hoja de respuestas, Archivo → Descargar → CSV, y súbelo
+> en «Cargar datos» de la copia local de EquiFit. La app reconoce el archivo de Google Forms y lo
+> convierte sola: descarta a quien no dio su consentimiento, pasa «Sí / A veces / No» a 1 y 0, y
+> acepta decimales con coma. **No cambies el texto de las preguntas**, porque la app las reconoce
+> por su título.
+>
+> Los formularios de la versión 1 (`EquiFit_formularios.gs`: consentimiento con nombre y encuesta
+> con folio) describen una prueba en persona con un vehículo del equipo. No los usen con la
+> encuesta en línea, porque su texto ya no corresponde a lo que se hace.
+
+## Versión 1 (prueba en persona)
+
 Los dos primeros entregables del plan de trabajo:
 
 | Entregable | Archivo |

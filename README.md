@@ -95,7 +95,7 @@ Descarga [`datos/plantilla_equifit.csv`](datos/plantilla_equifit.csv). Columnas:
 | `likert_comodidad`, `likert_ajuste` | Encuesta | 1 a 5 |
 | `cuello_corta`, `anclaje_adecuado`, `presion_busto` | Lista de cotejo | 1 = sí, 0 = no |
 
-Acepta CSV con coma o punto y coma (Excel en español) y archivos `.xlsx`. La app valida rangos y avisa qué filas descartó.
+Acepta CSV con coma o punto y coma (Excel en español) y archivos `.xlsx`. También reconoce directamente el CSV que exporta la encuesta en línea de Google Forms ([`instrumentos/`](instrumentos/)) y lo convierte sola. La app valida rangos y avisa qué filas descartó.
 
 ## Ejecutar en tu computadora
 
