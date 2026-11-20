@@ -1,13 +1,13 @@
 /**
  * EquiFit — Encuesta en línea con autorreporte (versión 2).
  *
- * Cada persona responde sobre el vehículo en el que viaja con más frecuencia y
- * se toma sus propias medidas en casa con una cinta métrica. Con solo contestar
- * este formulario se obtienen TODAS las columnas que usa EquiFit:
+ * Cada persona responde sobre el vehículo en el que viaja con más frecuencia. No
+ * necesita cinta métrica: estatura y peso, más tres preguntas que cualquiera sabe
+ * contestar. Con solo contestar este formulario se obtienen TODAS las columnas
+ * que usa EquiFit:
  *
- *   genero, estatura_cm, peso_kg, altura_hombro_sentado_cm, longitud_torso_cm,
- *   contorno_pecho_cm, alcance_brazo_cm, likert_comodidad, likert_ajuste,
- *   cuello_corta, anclaje_adecuado, presion_busto
+ *   genero, estatura_cm, peso_kg, hombro_vs_anclaje, talla_superior, largo_camisas,
+ *   likert_comodidad, likert_ajuste, cuello_corta, anclaje_adecuado, presion_busto
  *
  * El consentimiento informado va al inicio del mismo formulario, así que NO se
  * pide nombre, correo ni folio: la encuesta es anónima. La app EquiFit reconoce
@@ -33,10 +33,9 @@ const T = {
   genero: 'Género',
   estatura: 'Estatura (cm)',
   peso: 'Peso (kg)',
-  hombro: 'Altura de hombro sentado (cm)',
-  torso: 'Longitud de torso (cm)',
-  pecho: 'Contorno de pecho o busto (cm)',
-  brazo: 'Alcance de brazo (cm)',
+  hombro: 'Sentado(a) en tu auto, ¿dónde queda la parte alta de tu hombro?',
+  talla: '¿Cuál es tu talla de playera o blusa?',
+  largo: 'De largo, ¿cómo te quedan las camisas o blusas de tu talla?',
   comodidad: '¿Qué tan cómodo te resulta el cinturón?',
   ajuste: '¿Qué tan bien se ajusta el cinturón a tu cuerpo?',
   cuello: '¿La banda diagonal te roza o te corta el cuello?',
@@ -49,8 +48,7 @@ function crearEncuestaEquiFit() {
   form.setDescription(
     'Estudio sobre el ajuste del cinturón de seguridad · Proyecto Integrador I, ' +
     'TSU en Ciencia de Datos, Universidad Politécnica de Yucatán.\n\n' +
-    'Toma unos 10 minutos. Vas a necesitar una cinta métrica (de costura sirve) y, de ' +
-    'preferencia, que alguien te ayude a medir.\n\n' +
+    'Toma unos 5 minutos y no necesitas medirte.\n\n' +
     'Responde pensando en el vehículo en el que viajas con más frecuencia.')
     .setConfirmationMessage('Gracias por participar. Tus respuestas son anónimas y quedaron registradas.')
     .setProgressBar(true)
@@ -66,13 +64,13 @@ function crearEncuestaEquiFit() {
     .setTitle('Consentimiento informado')
     .setHelpText(
       'QUÉ HARÍAS: contestar preguntas sobre cómo te queda el cinturón de seguridad en tu vehículo ' +
-      'habitual y anotar algunas medidas de tu cuerpo que tú mismo(a) tomas con cinta métrica.\n\n' +
+      'habitual y algunos datos generales de tu cuerpo, como tu estatura y tu talla de ropa.\n\n' +
       'TU PARTICIPACIÓN es voluntaria y anónima: no pedimos nombre, correo ni ningún dato que te ' +
       'identifique. Puedes dejar el formulario en cualquier momento sin ninguna consecuencia, ' +
-      'tampoco en calificaciones. Si una medida te incomoda, puedes no participar.\n\n' +
+      'tampoco en calificaciones. Si alguna pregunta te incomoda, puedes no participar.\n\n' +
       'AVISO DE PRIVACIDAD SIMPLIFICADO\n' +
       'Responsable: equipo del proyecto EquiFit, Universidad Politécnica de Yucatán.\n' +
-      'Datos: género, rango de edad, medidas corporales, datos de tu vehículo y tus opiniones.\n' +
+      'Datos: género, rango de edad, estatura, peso, talla de ropa, datos de tu vehículo y tus opiniones.\n' +
       'Finalidad: solo académica. Los resultados se publican agrupados, nunca por persona.\n' +
       'Protección: las respuestas se guardan con acceso solo para el equipo y el docente, y se ' +
       'eliminan al cierre del cuatrimestre. No se comparten con terceros.\n' +
@@ -97,36 +95,27 @@ function crearEncuestaEquiFit() {
   form.addMultipleChoiceItem().setTitle('¿Cuál es tu relación con la UPY?')
     .setChoiceValues(['Estudiante', 'Docente', 'Personal administrativo']).showOtherOption(true).setRequired(true);
 
-  /* ---------- 3. Medidas ---------- */
+  /* ---------- 3. Tu cuerpo ---------- */
   form.addPageBreakItem()
-    .setTitle('Tus medidas')
-    .setHelpText(
-      'Usa una cinta métrica y escribe todo en CENTÍMETROS (por ejemplo 165, no 1.65). Mide sobre ropa ' +
-      'ligera. Si no tienes cinta, usa una cuerda y después mídela con una regla. Las medidas de hombro, ' +
-      'torso y brazo salen mejor si alguien te ayuda.');
+    .setTitle('Tu cuerpo')
+    .setHelpText('No necesitas medirte: responde con lo que sabes. Si tienes duda entre dos opciones, elige la que más se acerque.');
 
-  numero_(form, T.estatura, 'Descalzo(a), de pie contra la pared. Ejemplo: 162', 120, 220);
+  numero_(form, T.estatura, 'En centímetros, sin decimales. Ejemplo: 162 (no 1.62)', 120, 220);
   numero_(form, T.peso, 'Aproximado, en kilogramos. Ejemplo: 64', 30, 200);
-  numero_(form, T.hombro,
-    'Siéntate en una silla dura con la espalda recta. Mide desde el asiento hasta la parte más alta ' +
-    'del hombro. Ejemplo: 56', 35, 80);
-  numero_(form, T.torso,
-    'Desde el hueso que sobresale en la base del cuello (al inclinar la cabeza) hasta la altura del ' +
-    'ombligo, por la espalda. Ejemplo: 45', 30, 75);
-  numero_(form, T.pecho,
-    'Rodea la parte más amplia del pecho o busto con la cinta, sin apretar. Ejemplo: 92', 60, 160);
-  numero_(form, T.brazo,
-    'Con el brazo extendido al frente, desde la punta del hombro hasta la punta del dedo medio. ' +
-    'Ejemplo: 72', 50, 110);
 
-  form.addMultipleChoiceItem().setTitle('¿Cómo obtuviste tus medidas?')
-    .setHelpText('Nos sirve para saber qué tan precisas son. Responde con sinceridad.')
-    .setChoiceValues([
-      'Las medí con cinta y alguien me ayudó',
-      'Las medí con cinta yo solo(a)',
-      'Algunas las medí y otras las estimé',
-      'Las estimé sin medir'
-    ]).setRequired(true);
+  form.addMultipleChoiceItem().setTitle(T.hombro)
+    .setHelpText('Siéntate en tu lugar habitual, con el asiento como lo usas siempre. Compara la parte alta de ' +
+      'tu hombro con la pieza de donde sale la banda del cinturón, en el poste junto a la ventana.')
+    .setChoiceValues(['Arriba de donde sale el cinturón', 'A la misma altura', 'Un poco abajo', 'Muy abajo'])
+    .setRequired(true);
+  form.addMultipleChoiceItem().setTitle(T.talla)
+    .setHelpText('La que compras con más frecuencia para la parte de arriba.')
+    .setChoiceValues(['XS', 'S', 'M', 'L', 'XL', 'XXL o más'])
+    .setRequired(true);
+  form.addMultipleChoiceItem().setTitle(T.largo)
+    .setHelpText('Piensa solo en el largo del cuerpo de la prenda (de los hombros hacia abajo), no en las mangas.')
+    .setChoiceValues(['Cortas', 'Bien', 'Largas'])
+    .setRequired(true);
 
   /* ---------- 4. Tu vehículo ---------- */
   form.addPageBreakItem()
@@ -202,7 +191,7 @@ function numero_(form, titulo, ayuda, min, max) {
     .setValidation(FormApp.createTextValidation()
       .requireNumberBetween(min, max)
       .setHelpText('Escribe un número entre ' + min + ' y ' + max + ', en ' +
-        (titulo.indexOf('(kg)') >= 0 ? 'kilogramos.' : 'centímetros.'))
+        (titulo.indexOf('(kg)') >= 0 ? 'kilogramos.' : 'centímetros (por ejemplo 162, no 1.62).'))
       .build())
     .setRequired(true);
 }

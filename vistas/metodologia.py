@@ -7,7 +7,7 @@ st.markdown("# Metodología y equipo")
 st.markdown("### Pregunta de investigación")
 st.markdown(
     "> ¿Reduce la brecha de error entre mujeres y hombres entrenar el modelo predictivo de ajuste del "
-    "cinturón con variables antropométricas femeninas (longitud de torso, altura de hombro y busto), "
+    "cinturón con variables antropométricas femeninas (proporción de hombro y torso, y pecho o busto), "
     "frente a entrenarlo únicamente con el dataset basado en el estándar masculino?"
 )
 st.caption(
@@ -20,7 +20,7 @@ c1, c2, c3 = st.columns(3)
 with c1:
     with st.container(border=True):
         st.markdown("**Variable independiente**")
-        st.markdown("Qué datos ve el modelo: Versión A (estatura y peso) o Versión B (+ torso, hombro sentado y busto).")
+        st.markdown("Qué datos ve el modelo: Versión A (estatura y peso) o Versión B (+ posición del hombro respecto al cinturón, talla de playera o blusa y largo de torso).")
 with c2:
     with st.container(border=True):
         st.markdown("**Variables dependientes**")
@@ -41,8 +41,8 @@ st.markdown(
 | Instrumento | Qué registra |
 |---|---|
 | Encuesta (Google Forms) | Datos sociodemográficos, comodidad y ajuste en escala Likert 1–5, historial de conducción |
-| Medición antropométrica | Estatura, altura de hombro sentado, longitud de torso, alcance de brazo y contorno de pecho, con cinta métrica y hoja de registro |
-| Prueba de uso (lista de cotejo) | ¿Corta en el cuello? ¿El anclaje se adapta a la altura del hombro? ¿Presiona sobre el busto/pecho? |
+| Preguntas sobre el cuerpo | Estatura, peso, posición del hombro respecto al anclaje del cinturón, talla de playera o blusa y largo de las camisas en esa talla |
+| Preguntas de ajuste (lista de cotejo) | ¿Corta en el cuello? ¿La banda queda en el centro del hombro? ¿Presiona sobre el busto/pecho? |
 """
 )
 
@@ -85,7 +85,9 @@ st.markdown("### Limitaciones")
 st.markdown(
     """
 - Muestra pequeña y no probabilística: los resultados no se generalizan a toda la población.
-- La comodidad es subjetiva; por eso se combina con medición y lista de cotejo.
+- La comodidad es subjetiva; por eso se combina con preguntas concretas sobre cuello, hombro y busto.
+- Las proporciones del cuerpo se obtienen con preguntas sencillas (posición del hombro, talla y largo de
+  camisas) en lugar de cinta métrica: son menos precisas, así que se necesitan más participantes.
 - Con 30 + 30 participantes, la prueba de cada partición tiene ~9 mujeres; por eso EquiFit repite el
   experimento en varias particiones y reporta promedio y variación.
 - La demo pública usa datos simulados hasta tener los datos de campo; no anticipa resultados.

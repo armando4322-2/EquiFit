@@ -23,10 +23,9 @@ TITULOS = {
     "Género": "genero",
     "Estatura (cm)": "estatura_cm",
     "Peso (kg)": "peso_kg",
-    "Altura de hombro sentado (cm)": "altura_hombro_sentado_cm",
-    "Longitud de torso (cm)": "longitud_torso_cm",
-    "Contorno de pecho o busto (cm)": "contorno_pecho_cm",
-    "Alcance de brazo (cm)": "alcance_brazo_cm",
+    "Sentado(a) en tu auto, ¿dónde queda la parte alta de tu hombro?": "hombro_vs_anclaje",
+    "¿Cuál es tu talla de playera o blusa?": "talla_superior",
+    "De largo, ¿cómo te quedan las camisas o blusas de tu talla?": "largo_camisas",
     "¿Qué tan cómodo te resulta el cinturón?": "likert_comodidad",
     "¿Qué tan bien se ajusta el cinturón a tu cuerpo?": "likert_ajuste",
     "¿La banda diagonal te roza o te corta el cuello?": "cuello_corta",
@@ -34,14 +33,31 @@ TITULOS = {
     "¿La banda te presiona de forma incómoda sobre el pecho o el busto?": "presion_busto",
 }
 ACEPTA = "¿Aceptas participar en el estudio?"
-COMO_MIDIO = "¿Cómo obtuviste tus medidas?"
 _MAPA = {_norm(k): v for k, v in TITULOS.items()}
+
+# Texto de cada opción (inicio, normalizado) -> valor ordinal de config.ESCALAS
+OPCIONES = {
+    "hombro_vs_anclaje": {"arriba": 1, "a la misma altura": 2, "un poco abajo": 3, "muy abajo": 4},
+    "talla_superior": {"xs": 1, "s": 2, "m": 3, "l": 4, "xl": 5, "xxl": 6},
+    "largo_camisas": {"cortas": 1, "bien": 2, "largas": 3},
+}
+
+
+def _ordinal(serie: pd.Series, opciones: dict) -> pd.Series:
+    def uno(v):
+        n = _norm(v)
+        # la coincidencia más larga gana ("xl" antes que "x", "xxl" antes que "xl")
+        for texto in sorted(opciones, key=len, reverse=True):
+            if n == texto or n.startswith(texto + " "):
+                return opciones[texto]
+        return pd.NA
+    return serie.map(uno)
 
 
 def es_exportacion_forms(df: pd.DataFrame) -> bool:
     """True si el archivo trae los títulos de la encuesta en línea."""
     cols = {_norm(c) for c in df.columns}
-    return sum(k in cols for k in _MAPA) >= 8
+    return sum(k in cols for k in _MAPA) >= 7
 
 
 def _si_no(serie: pd.Series) -> pd.Series:
@@ -64,27 +80,18 @@ def desde_google_forms(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
             avisos.append(f"Se excluyeron {rechazos} respuestas sin consentimiento o de menores de edad.")
         df = df[acepto]
 
-    col_como = next((c for c, n in normal.items() if n == _norm(COMO_MIDIO)), None)
-
     salida = pd.DataFrame(index=df.index)
     for col, n in normal.items():
         if n in _MAPA:
             salida[_MAPA[n]] = df[col]
-    if col_como is not None:
-        salida["como_midio"] = df[col_como]
-        estimadas = int(df[col_como].map(_norm).str.startswith("las estime").sum())
-        if estimadas:
-            avisos.append(
-                f"{estimadas} {'persona estimó' if estimadas == 1 else 'personas estimaron'} sus medidas "
-                "sin medirlas. Se incluyen, pero conviene "
-                "revisar si cambian los resultados al excluirlas (columna «como_midio»)."
-            )
 
     for c in ("cuello_corta", "presion_busto", "anclaje_adecuado"):
         if c in salida:
             salida[c] = _si_no(salida[c])
-    for c in ("estatura_cm", "peso_kg", "altura_hombro_sentado_cm", "longitud_torso_cm",
-              "contorno_pecho_cm", "alcance_brazo_cm"):
+    for c, opciones in OPCIONES.items():
+        if c in salida:
+            salida[c] = _ordinal(salida[c], opciones)
+    for c in ("estatura_cm", "peso_kg"):
         if c in salida:  # acepta coma decimal: "45,5"
             salida[c] = pd.to_numeric(salida[c].astype(str).str.replace(",", ".", regex=False), errors="coerce")
 

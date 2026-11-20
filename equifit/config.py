@@ -11,14 +11,23 @@ Cambiar algo aquí cambia el experimento completo de forma consistente.
 COL_FOLIO = "folio"
 COL_GENERO = "genero"
 
-# Instrumento 2: medición antropométrica (cm / kg)
+# Medidas del cuerpo: estatura y peso (números) más tres preguntas que cualquier
+# persona contesta sin cinta métrica (respuestas ordinales).
 ANTROPOMETRIA = {
     "estatura_cm": "Estatura",
     "peso_kg": "Peso",
-    "altura_hombro_sentado_cm": "Altura de hombro sentado",
-    "longitud_torso_cm": "Longitud de torso",
-    "contorno_pecho_cm": "Contorno de pecho / busto",
-    "alcance_brazo_cm": "Alcance de brazo",
+    "hombro_vs_anclaje": "Hombro respecto al anclaje",
+    "talla_superior": "Talla de playera o blusa",
+    "largo_camisas": "Largo de camisas en su talla",
+}
+
+# Respuestas posibles de las preguntas ordinales (valor -> texto mostrado).
+ESCALAS = {
+    "hombro_vs_anclaje": {1: "Arriba de donde sale el cinturón", 2: "A la misma altura",
+                          3: "Un poco abajo", 4: "Muy abajo"},
+    "talla_superior": {1: "XS", 2: "S", 3: "M", 4: "L", 5: "XL", 6: "XXL o más"},
+    # Camisas cortas de largo = torso largo para su talla, y al revés.
+    "largo_camisas": {1: "Cortas", 2: "Bien", 3: "Largas"},
 }
 
 # Instrumento 1: encuesta (escala Likert 1–5)
@@ -48,11 +57,13 @@ GRUPOS = ["Mujer", "Hombre"]
 # Versión A — dataset "estándar": solo métricas generales, sin proporciones.
 VARIABLES_MODELO_A = ["estatura_cm", "peso_kg"]
 
-# Versión B — dataset inclusivo: agrega torso, hombro sentado y busto.
+# Versión B — dataset inclusivo: agrega dónde queda el hombro respecto al cinturón
+# (proporción hombro/torso), la talla de la parte de arriba (pecho o busto) y el
+# largo del torso para su talla.
 VARIABLES_MODELO_B = VARIABLES_MODELO_A + [
-    "altura_hombro_sentado_cm",
-    "longitud_torso_cm",
-    "contorno_pecho_cm",
+    "hombro_vs_anclaje",
+    "talla_superior",
+    "largo_camisas",
 ]
 
 # ---------------------------------------------------------------------------
@@ -77,7 +88,7 @@ UMBRAL_LIKERT = 4.0
 
 # Referencia del "estándar masculino" para la pregunta correlacional.
 # Se calcula a partir del grupo Hombre de los datos cargados (percentil 50).
-VARIABLES_DISTANCIA = ["estatura_cm", "altura_hombro_sentado_cm", "longitud_torso_cm"]
+VARIABLES_DISTANCIA = ["estatura_cm", "hombro_vs_anclaje", "largo_camisas"]
 
 # ---------------------------------------------------------------------------
 # Identidad visual (paleta validada para daltonismo)

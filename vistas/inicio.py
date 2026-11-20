@@ -40,8 +40,8 @@ mismos participantes, y solo cambiamos qué datos ve:
     with b:
         st.markdown(
             '<div class="ef-modelo"><span class="ef-tag ef-tag-b">Modelo B</span>'
-            "<h4>Dataset inclusivo</h4>Agrega longitud de torso, altura de hombro "
-            "sentado y contorno de pecho/busto.</div>",
+            "<h4>Dataset inclusivo</h4>Agrega dónde queda el hombro respecto al cinturón, "
+            "la talla de la parte de arriba y el largo del torso.</div>",
             unsafe_allow_html=True,
         )
     st.write("")

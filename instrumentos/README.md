@@ -1,10 +1,15 @@
 # Instrumentos del estudio (Google Forms)
 
 > **Versión vigente: encuesta en línea con autorreporte** (`EquiFit_encuesta_autorreporte.gs`).
-> Cada persona responde sobre el vehículo en el que viaja con más frecuencia y se toma sus propias
-> medidas con cinta métrica. El consentimiento va al inicio del mismo formulario y la encuesta es
-> anónima: no pide nombre, correo ni folio. Con solo contestarla se obtienen todas las columnas que
-> usa EquiFit.
+> Cada persona responde sobre el vehículo en el que viaja con más frecuencia. No necesita cinta
+> métrica: da su estatura y su peso, y contesta tres preguntas sencillas (dónde queda su hombro
+> respecto al cinturón, su talla de playera o blusa y si las camisas le quedan cortas o largas).
+> El consentimiento va al inicio del mismo formulario y la encuesta es anónima: no pide nombre,
+> correo ni folio. Con solo contestarla se obtienen todas las columnas que usa EquiFit.
+>
+> **Tamaño de muestra:** como estas preguntas son menos precisas que una medida con cinta, en la
+> simulación el resultado A vs B es claro a partir de unas 300 respuestas (150 por grupo). Con 100
+> o 200 no es concluyente. Compartan el enlace lo más que puedan.
 >
 > **Para usarla:** crea el formulario igual que se explica abajo, pero con la función
 > `crearEncuestaEquiFit`. Usa el encabezado `encabezado_encuesta.png`.

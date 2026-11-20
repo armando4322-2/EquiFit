@@ -1,4 +1,3 @@
-import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -11,7 +10,7 @@ modelos = ui.modelos_completos(df)
 
 st.markdown("# Pruébalo tú")
 st.markdown(
-    "Escribe tus medidas y compara lo que opina cada modelo sobre si el cinturón te ajustaría. "
+    "Contesta como lo harías en la encuesta y compara lo que opina cada modelo sobre si el cinturón te ajustaría. "
     "No guardamos nada: todo se calcula en el momento."
 )
 ui.aviso_fuente(es_real, df)
@@ -19,19 +18,20 @@ st.write("")
 
 
 @st.cache_data(show_spinner=False)
-def proporciones(df):
-    """Regresión lineal por grupo para estimar medidas a partir de la estatura."""
-    out = {}
-    for g in C.GRUPOS:
-        s = df[df[C.COL_GENERO] == g]
-        out[g] = {
-            v: np.polyfit(s["estatura_cm"], s[v], 1)
-            for v in ("altura_hombro_sentado_cm", "longitud_torso_cm", "contorno_pecho_cm")
-        }
-    return out
+def respuestas_tipicas(df):
+    """Respuesta más común de cada grupo, para precargar el simulador."""
+    return {
+        g: {v: int(df.loc[df[C.COL_GENERO] == g, v].mode().iloc[0]) for v in C.ESCALAS}
+        for g in C.GRUPOS
+    }
 
 
-reg = proporciones(df)
+tipicas = respuestas_tipicas(df)
+PREGUNTAS = {
+    "hombro_vs_anclaje": "Sentado(a) en tu auto, la parte alta de tu hombro queda…",
+    "talla_superior": "Tu talla de playera o blusa",
+    "largo_camisas": "De largo, las camisas o blusas de tu talla te quedan…",
+}
 
 izq, der = st.columns([1, 1.3], gap="large")
 with izq:
@@ -40,31 +40,26 @@ with izq:
         grupo = grupo or "Mujer"
         estatura = st.slider("Estatura (cm)", 140, 200, 158 if grupo == "Mujer" else 171)
         peso = st.slider("Peso (kg)", 40, 130, 63 if grupo == "Mujer" else 76)
-        conozco = st.toggle(
-            "Conozco mis medidas de hombro, torso y pecho",
-            help="Si no, las estimamos a partir de tu estatura con las proporciones típicas del grupo.",
-        )
-        est = {v: float(np.polyval(reg[grupo][v], estatura)) for v in reg[grupo]}
-        if conozco:
-            hombro = st.slider("Altura de hombro sentado (cm)", 40.0, 75.0, round(est["altura_hombro_sentado_cm"], 1), 0.5,
-                               help="Sentado con la espalda recta: del asiento a la parte alta del hombro.")
-            torso = st.slider("Longitud de torso (cm)", 35.0, 65.0, round(est["longitud_torso_cm"], 1), 0.5)
-            pecho = st.slider("Contorno de pecho / busto (cm)", 65.0, 140.0, round(est["contorno_pecho_cm"], 1), 0.5)
-        else:
-            hombro, torso, pecho = est["altura_hombro_sentado_cm"], est["longitud_torso_cm"], est["contorno_pecho_cm"]
-            st.caption(f"Estimado: hombro {hombro:.1f} cm · torso {torso:.1f} cm · pecho {pecho:.1f} cm")
+        respuestas = {}
+        for var, pregunta in PREGUNTAS.items():
+            opciones = list(C.ESCALAS[var])
+            respuestas[var] = st.selectbox(
+                pregunta, opciones,
+                index=opciones.index(tipicas[grupo][var]),
+                format_func=lambda v, var=var: C.ESCALAS[var][v],
+                key=f"sim_{var}_{grupo}",
+                help="Viene precargada con la respuesta más común del grupo; cámbiala por la tuya."
+                if var == "hombro_vs_anclaje" else None,
+            )
 
-persona = {
-    "estatura_cm": estatura, "peso_kg": peso,
-    "altura_hombro_sentado_cm": hombro, "longitud_torso_cm": torso, "contorno_pecho_cm": pecho,
-}
+persona = {"estatura_cm": estatura, "peso_kg": peso, **respuestas}
 prob = M.predecir_persona(modelos, persona)
 
 with der:
     a, b = st.columns(2)
     for col, nombre, clase, vars_ in (
         (a, "Modelo A", "ef-tag-a", "estatura y peso"),
-        (b, "Modelo B", "ef-tag-b", "estatura, peso, hombro, torso y pecho"),
+        (b, "Modelo B", "ef-tag-b", "estatura, peso, hombro, talla y largo de torso"),
     ):
         p = prob[nombre]
         veredicto = "Te ajusta" if p >= 0.5 else "No te ajusta"
@@ -91,24 +86,30 @@ with der:
                 "reales sí son compatibles con el cinturón. Sin esos datos, el modelo generaliza de más."
             )
     else:
+        cambio = round(dif * 100)
         st.success(
-            f"Ambos modelos coinciden. La probabilidad cambia {dif * 100:+.0f} puntos cuando el modelo "
-            "conoce tus proporciones."
+            "Ambos modelos coinciden" + (
+                f". La probabilidad cambia {cambio:+d} puntos cuando el modelo conoce tus proporciones."
+                if cambio else ", con la misma probabilidad."
+            )
         )
 
     # Dónde estás respecto a la muestra
     fig = go.Figure()
+    cats = list(C.ESCALAS["hombro_vs_anclaje"])
+    CORTAS = {1: "Arriba", 2: "Misma altura", 3: "Un poco abajo", 4: "Muy abajo"}
+    etiquetas = [CORTAS[c] for c in cats]
     for g in C.GRUPOS:
-        s = df[df[C.COL_GENERO] == g]["altura_hombro_sentado_cm"]
-        fig.add_histogram(
-            x=s, name=f"{g}es" if g == "Mujer" else f"{g}s", opacity=0.7, nbinsx=24,
-            marker=dict(color=C.COLOR_GRUPO[g], line=dict(width=1, color="#f6f1fb")),
-            hovertemplate="%{x} cm: %{y} personas<extra></extra>",
+        s = df.loc[df[C.COL_GENERO] == g, "hombro_vs_anclaje"].value_counts(normalize=True)
+        ys = [float(s.get(c, 0)) for c in cats]
+        fig.add_bar(
+            x=etiquetas, y=ys, name=f"{g}es" if g == "Mujer" else f"{g}s",
+            marker=dict(color=C.COLOR_GRUPO[g], line=dict(width=2, color="#f6f1fb"), cornerradius=4),
+            hovertemplate="%{x}<br>" + g + ": %{y:.0%}<extra></extra>",
         )
-    fig.add_vline(x=hombro, line=dict(color=ui.TINTA, width=2), annotation_text="Tú",
-                  annotation_position="top")
-    fig.update_layout(barmode="overlay")
-    fig.update_xaxes(title="Altura de hombro sentado (cm)")
-    fig.update_yaxes(title="Personas")
-    st.plotly_chart(ui.layout(fig, "Tu altura de hombro frente a la muestra", 280, pct=False),
+    fig.add_annotation(x=CORTAS[respuestas["hombro_vs_anclaje"]], y=1.0,
+                       yref="paper", text="Tú", showarrow=False,
+                       font=dict(color=ui.TINTA, size=13), bgcolor="#fbe6f0", borderpad=3)
+    fig.update_yaxes(title="Personas del grupo")
+    st.plotly_chart(ui.layout(fig, "Dónde queda el hombro respecto al cinturón", 300),
                     width="stretch", config={"displayModeBar": False})

@@ -27,8 +27,8 @@ def test_regla_objetivo():
 
 
 def test_validar_detecta_columnas_faltantes():
-    df = D.simular(n=40).drop(columns=["contorno_pecho_cm"])
-    with pytest.raises(D.ErrorDatos, match="contorno_pecho_cm"):
+    df = D.simular(n=40).drop(columns=["talla_superior"])
+    with pytest.raises(D.ErrorDatos, match="talla_superior"):
         D.validar(df)
 
 
@@ -81,11 +81,10 @@ def test_exportacion_de_google_forms():
             "¿Aceptas participar en el estudio?": "Sí, acepto participar",
             "Género": r.genero, "Rango de edad": "21 a 24 años",
             "Estatura (cm)": str(r.estatura_cm).replace(".", ","),
-            "Peso (kg)": r.peso_kg, "Altura de hombro sentado (cm)": r.altura_hombro_sentado_cm,
-            "Longitud de torso (cm)": r.longitud_torso_cm,
-            "Contorno de pecho o busto (cm)": r.contorno_pecho_cm,
-            "Alcance de brazo (cm)": r.alcance_brazo_cm,
-            "¿Cómo obtuviste tus medidas?": "Las medí con cinta y alguien me ayudó",
+            "Peso (kg)": r.peso_kg,
+            "Sentado(a) en tu auto, ¿dónde queda la parte alta de tu hombro?": C.ESCALAS["hombro_vs_anclaje"][r.hombro_vs_anclaje],
+            "¿Cuál es tu talla de playera o blusa?": C.ESCALAS["talla_superior"][r.talla_superior],
+            "De largo, ¿cómo te quedan las camisas o blusas de tu talla?": C.ESCALAS["largo_camisas"][r.largo_camisas],
             "¿Qué tan cómodo te resulta el cinturón?": r.likert_comodidad,
             "¿Qué tan bien se ajusta el cinturón a tu cuerpo?": r.likert_ajuste,
             "¿La banda diagonal te roza o te corta el cuello?": si_no(r.cuello_corta),
@@ -101,4 +100,6 @@ def test_exportacion_de_google_forms():
     for c in ("cuello_corta", "presion_busto", "anclaje_adecuado", C.COL_OBJETIVO):
         assert set(limpio[c].unique()) <= {0, 1}
     assert (limpio["cuello_corta"].values == base["cuello_corta"].values).all()
+    for c in C.ESCALAS:  # las opciones de texto vuelven exactamente al mismo valor ordinal
+        assert (limpio[c].values == base[c].values).all(), c
     assert (limpio[C.COL_OBJETIVO].values == base[C.COL_OBJETIVO].values).all()

@@ -12,14 +12,16 @@ st.markdown("# Cargar datos de campo")
 st.markdown(
     "Sube los datos reales y toda la demo (auditoría, preguntas y simulador) se recalcula con ellos. "
     "Puedes subir **un archivo combinado** o **los tres instrumentos por separado** "
-    "(encuesta de Google Forms, hoja antropométrica y lista de cotejo): se unen por la columna `folio`."
+    "(se unen por la columna `folio`). El CSV que exporta la encuesta en línea de Google Forms se reconoce "
+    "y se convierte solo."
 )
 
 with st.expander("Columnas que se esperan", expanded=False):
     filas = (
         [("folio", "Identificador anónimo (P001, P002…)", "Todos los instrumentos")]
         + [("genero", "Mujer / Hombre (también acepta M, F, H, femenino, masculino)", "Encuesta")]
-        + [(k, v, "Medición antropométrica") for k, v in C.ANTROPOMETRIA.items()]
+        + [(k, v + (" (" + " · ".join(f"{n} = {t}" for n, t in C.ESCALAS[k].items()) + ")" if k in C.ESCALAS else ""),
+            "Encuesta: tu cuerpo") for k, v in C.ANTROPOMETRIA.items()]
         + [(k, v, "Encuesta") for k, v in C.LIKERT.items()]
         + [(k, v + " (1 = sí, 0 = no)", "Lista de cotejo") for k, v in C.COTEJO.items()]
     )

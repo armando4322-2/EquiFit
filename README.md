@@ -36,9 +36,9 @@ EquiFit es una interfaz web que funciona como **sistema de auditoría de datos**
 |---|:---:|:---:|
 | Estatura | ✅ | ✅ |
 | Peso | ✅ | ✅ |
-| Altura de hombro sentado | — | ✅ |
-| Longitud de torso | — | ✅ |
-| Contorno de pecho / busto | — | ✅ |
+| Hombro respecto al anclaje del cinturón (arriba, misma altura, un poco abajo, muy abajo) | — | ✅ |
+| Talla de playera o blusa (XS a XXL) | — | ✅ |
+| Largo de camisas en su talla (cortas, bien, largas) | — | ✅ |
 
 Ambos predicen si el cinturón **ajusta bien (1)** o **no ajusta / genera molestia (0)**. Si el Modelo B se equivoca menos con las mujeres, la diferencia viene exactamente de los datos que antes faltaban.
 
@@ -79,9 +79,9 @@ La paridad demográfica pide que el modelo diga «ajusta» igual de seguido a mu
 
 > **La demo usa datos simulados hasta terminar el trabajo de campo (2 al 5 de noviembre de 2026).** No son resultados del proyecto.
 
-Los datos simulados tienen exactamente el esquema de nuestros instrumentos (encuesta, medición antropométrica y lista de cotejo). Sus supuestos están documentados en [`equifit/data.py`](equifit/data.py): distribuciones de referencia para población adulta y un anclaje de cinturón regulable pensado para un hombre promedio. Sirven para que el sistema de auditoría funcione y se pueda revisar antes de tener los datos reales.
+Los datos simulados tienen exactamente el esquema de nuestros instrumentos (encuesta, preguntas sobre el cuerpo y lista de cotejo). Sus supuestos están documentados en [`equifit/data.py`](equifit/data.py): distribuciones de referencia para población adulta y un anclaje de cinturón regulable pensado para un hombre promedio. Sirven para que el sistema de auditoría funcione y se pueda revisar antes de tener los datos reales.
 
-Con los datos simulados (300 participantes, 15 repeticiones), el Modelo B baja el error en mujeres de ~34 % a ~21 %. Con 60 participantes simulados, la diferencia ya no es concluyente; eso es un recordatorio útil sobre el tamaño de muestra.
+Con los datos simulados (300 participantes, 15 repeticiones), el Modelo B baja el error en mujeres de ~38 % a ~30 % y gana en el 87 % de las repeticiones. Con 100 o 200 participantes la diferencia ya no es concluyente: las preguntas sin cinta métrica son menos precisas, así que la muestra tiene que ser grande.
 
 ### Formato para cargar los datos reales
 
@@ -91,7 +91,10 @@ Descarga [`datos/plantilla_equifit.csv`](datos/plantilla_equifit.csv). Columnas:
 |---|---|---|
 | `folio` | Todos | P001, P002… (sin nombres) |
 | `genero` | Encuesta | Mujer / Hombre (acepta F, M, H, femenino, masculino) |
-| `estatura_cm`, `peso_kg`, `altura_hombro_sentado_cm`, `longitud_torso_cm`, `contorno_pecho_cm`, `alcance_brazo_cm` | Medición | números |
+| `estatura_cm`, `peso_kg` | Encuesta | números |
+| `hombro_vs_anclaje` | Encuesta | 1 arriba · 2 misma altura · 3 un poco abajo · 4 muy abajo |
+| `talla_superior` | Encuesta | 1 XS · 2 S · 3 M · 4 L · 5 XL · 6 XXL o más |
+| `largo_camisas` | Encuesta | 1 cortas · 2 bien · 3 largas |
 | `likert_comodidad`, `likert_ajuste` | Encuesta | 1 a 5 |
 | `cuello_corta`, `anclaje_adecuado`, `presion_busto` | Lista de cotejo | 1 = sí, 0 = no |
 

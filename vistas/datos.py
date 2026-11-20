@@ -82,7 +82,7 @@ with der:
     st.markdown(f"Coeficiente de **{cor['metodo']}** · p {p_txt}")
     st.markdown(f"Relación **{A.interpretar_r(cor['r'])}**.")
     st.caption(
-        "La distancia combina estatura, altura de hombro sentado y longitud de torso, medida desde la "
+        "La distancia combina estatura, posición del hombro respecto al cinturón y largo de torso, medida desde la "
         "mediana del grupo de hombres. Se usa Spearman si los datos no son normales (Shapiro-Wilk). "
         "Una correlación muestra asociación, no causa."
     )

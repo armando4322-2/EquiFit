@@ -28,7 +28,7 @@ def distancia_estandar(df: pd.DataFrame) -> pd.DataFrame:
     """Distancia antropométrica al 'estándar masculino' (mediana del grupo Hombre).
 
     Distancia euclidiana en unidades de desviación estándar (z) sobre estatura,
-    altura de hombro sentado y longitud de torso.
+    posición del hombro respecto al anclaje y largo de torso (config.VARIABLES_DISTANCIA).
     """
     df = df.copy()
     hombres = df[df[C.COL_GENERO] == "Hombre"]

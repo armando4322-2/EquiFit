@@ -1,7 +1,7 @@
 """Datos de EquiFit: simulación para la demo, validación y carga de datos reales.
 
 IMPORTANTE: los datos simulados NO son resultados del proyecto. Sirven para que
-el sistema de auditoría funcione antes del trabajo de campo (2–5 nov 2026).
+el sistema de auditoría funcione antes de tener las respuestas de la encuesta.
 Las distribuciones son aproximaciones de referencia para población adulta
 mexicana; la geometría del cinturón es un supuesto de diseño documentado
 abajo. Cuando el equipo tenga sus datos reales, se cargan con el mismo esquema
@@ -58,7 +58,6 @@ def simular(n: int = 300, prop_mujeres: float = 0.5, semilla: int = C.SEMILLA) -
     hombro = 0.345 * estatura + rng.normal(0, 2.6, n) + np.where(es_m, -0.4, 0.6)
     torso = 0.29 * estatura + rng.normal(0, 1.8, n) + np.where(es_m, -0.3, 0.3)
     pecho = normal("pecho") + 0.25 * (peso - np.where(es_m, 64, 76))
-    alcance = 0.44 * estatura + rng.normal(0, 2.5, n)
 
     # --- Geometría del cinturón (supuesto de diseño) -----------------------
     anclaje, reg = SUPUESTOS["anclaje_cm"], SUPUESTOS["regulacion_cm"]
@@ -83,16 +82,29 @@ def simular(n: int = 300, prop_mujeres: float = 0.5, semilla: int = C.SEMILLA) -
     comodidad = np.clip(np.rint(base + rng.normal(0, 0.55, n)), 1, 5).astype(int)
     ajuste = np.clip(np.rint(base + 0.1 + rng.normal(0, 0.55, n)), 1, 5).astype(int)
 
+    # --- Lo que la persona responde en la encuesta (sin cinta métrica) -------
+    # Las medidas en cm de arriba no se preguntan: solo generan la geometría.
+    # Cada respuesta tiene su propio error de percepción.
+    percibido = desfase + rng.normal(0, 1.5, n)
+    hombro_vs_anclaje = np.select(
+        [percibido > 2, percibido > -2, percibido > -6], [1, 2, 3], default=4)
+    # Tallas: la de blusa se rige por el busto y la de camisa por el pecho
+    cortes = np.where(es_m[:, None], [[82, 88, 94, 100, 108]], [[86, 92, 100, 108, 116]])
+    pecho_talla = pecho + rng.normal(0, 3, n)
+    talla_superior = 1 + (pecho_talla[:, None] >= cortes).sum(axis=1)
+    # Largo de camisas: torso largo para su estatura -> las camisas le quedan cortas
+    resid_torso = torso - 0.29 * estatura + rng.normal(0, 1.0, n)
+    largo_camisas = np.select([resid_torso > 1.5, resid_torso < -1.5], [1, 3], default=2)
+
     df = pd.DataFrame(
         {
             C.COL_FOLIO: [f"P{i:03d}" for i in range(1, n + 1)],
             C.COL_GENERO: genero,
             "estatura_cm": estatura.round(1),
             "peso_kg": peso.round(1),
-            "altura_hombro_sentado_cm": hombro.round(1),
-            "longitud_torso_cm": torso.round(1),
-            "contorno_pecho_cm": pecho.round(1),
-            "alcance_brazo_cm": alcance.round(1),
+            "hombro_vs_anclaje": hombro_vs_anclaje.astype(int),
+            "talla_superior": talla_superior.astype(int),
+            "largo_camisas": largo_camisas.astype(int),
             "likert_comodidad": comodidad,
             "likert_ajuste": ajuste,
             "cuello_corta": cuello.astype(int),
@@ -174,13 +186,17 @@ def validar(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
         avisos.append(f"{int(bin_mal.sum())} filas tenían la lista de cotejo distinta de 0/1 y se descartaron.")
         df = df[~bin_mal]
 
-    rangos = {"estatura_cm": (120, 220), "peso_kg": (30, 200),
-              "altura_hombro_sentado_cm": (35, 80), "longitud_torso_cm": (30, 75),
-              "contorno_pecho_cm": (60, 160), "alcance_brazo_cm": (50, 110)}
+    for c, escala in C.ESCALAS.items():
+        mal = ~df[c].isin(list(escala))
+        if mal.any():
+            avisos.append(f"{int(mal.sum())} filas tenían «{c}» fuera de {min(escala)}–{max(escala)} y se descartaron.")
+            df = df[~mal]
+
+    rangos = {"estatura_cm": (120, 220), "peso_kg": (30, 200)}
     for c, (lo, hi) in rangos.items():
         raro = ~df[c].between(lo, hi)
         if raro.any():
-            avisos.append(f"{int(raro.sum())} valores de «{c}» fuera de {lo}–{hi}; revisa la hoja de registro.")
+            avisos.append(f"{int(raro.sum())} valores de «{c}» fuera de {lo}–{hi}; revisa esas respuestas.")
 
     por_grupo = df[C.COL_GENERO].value_counts()
     for gname in C.GRUPOS:

@@ -88,8 +88,8 @@ def aviso_fuente(es_real: bool, df: pd.DataFrame):
         st.markdown(
             f'<div class="ef-aviso"><b>Datos simulados para demostración.</b> {len(df)} participantes '
             f"ficticios ({n_m} mujeres, {n_h} hombres) generados con el mismo esquema que los instrumentos "
-            "del protocolo. No son resultados del proyecto: la recolección en la UPY es del 2 al 5 de noviembre "
-            "de 2026. Puedes cargar los datos reales en «Cargar datos».</div>",
+            "del estudio. No son resultados del proyecto: se reemplazan por las respuestas reales de la encuesta "
+            "en «Cargar datos».</div>",
             unsafe_allow_html=True,
         )
 
